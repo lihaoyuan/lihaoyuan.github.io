@@ -1,9 +1,0 @@
-# If you want to link only specific pages in your header, add the path to the
-# pages in order as they should show up.
-main:
-  - title: "关于"
-    url: /about/
-  - title: "归档"
-    url: /archives/
-  - title: "RSS"
-    url: feed.xml

@@ -24,16 +24,16 @@ script:
     rm -f jekyll.pid
 branches:
   only:
-    - master
+    - develop
 deploy:
   provider: pages
   skip-cleanup: true
-  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  github-token: $GITHUB_TOKEN
   keep-history: true
   local-dir: _site
-  target-branch: gh-pages
+  target-branch: master
   on:
-    branch: master
+    branch: develop
 env:
   global:
     secure: T43PBOZd7d+UbPiV42izYBREZB0qqUzZxdt3ROIbfAE66wr+J5bDdNHZKLDWxzZ+FkdzjWVl2/pT9B2jP4zO1PliYUfA5uU2RfWQSaasgNuqkbo1Zf1Na5meyupuJyqi7ZKJkQwEy8UjFUiwXP6bYIbC1moX1mTwQTLY+xvE+sBjCPnk0mcvwdDF4gxzLIp3O9vbUcVcBclSEcLtlIUGmmR28iBwAyKGWqUrDZEOVphpLu2xMRaDIF5py9iBHwAQvEfYQoj5VCwwJSf9gdSmNRMMSBb03RmpX70YOXQvv3l/NB6es+mN7X90mRgB/xZEhx41x/Eu8f+CUhh0rPwUvKnzyZVZRhCKHCEXVj1qHFtbc+Mi9010eS+7bDOzjyzRDYQFU8q/NTqT4gnnq0YabaT99UgbNoUCnxbiEQ0ESlXdSXfxGVvTuSlNOdn1MRmsbebMuqms07luv38ed8xq27dCZgo25Rr40KsOnnp8CHaLDZyNcAUY0mK4cokHqJ2RO763+v9H71LCPYJZGe22t4dEooCXy6RkbtV5xnZ1sQHgPDvbBs9csnTiE1A53pGU8p0ytAGqLIYoTFo8yagz0ggIvAR3xgJRTlzAw3qqviH7cqAwEnNHdYPELfihV+RiuUGykLFo6V93+JqAwz8CrIepPVSS5LPjEzO+zgi9LcU=

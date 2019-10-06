@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>/2019/10/05/welcome-to-jekyll/</loc>
-<lastmod>2019-10-05T02:28:19+00:00</lastmod>
+<loc>/2019/10/06/hello-world/</loc>
+<lastmod>2019-10-06T00:00:00+00:00</lastmod>
 </url>
 <url>
 <loc>/about/</loc>
@@ -14,9 +14,6 @@
 <loc>/</loc>
 </url>
 <url>
-<loc>/categories/jekyll/</loc>
-</url>
-<url>
-<loc>/categories/update/</loc>
+<loc>/tags/about/</loc>
 </url>
 </urlset>

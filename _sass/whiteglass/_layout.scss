@@ -1,3 +1,13 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 /**
  * Site header
  */
@@ -54,19 +64,18 @@
  * Site footer
  */
 .site-footer {
-  padding: $spacing-unit 0;
+  padding-top: $spacing-unit 0;
   font-size: 15px;
   color: $grey-color;
   text-align: center;
 }
-
-
 
 /**
  * Page content
  */
 .page-content {
   padding: $spacing-unit 0;
+  flex: 1;
 }
 
 .page-heading {

@@ -3,7 +3,7 @@
 main:
   - title: "归档"
     url: /archives/
-  - title: "Email"
+  - title: "联系我"
     url: mailto:li.haoyuan@foxmail.com
-  - title: "RSS"
-    url: feed.xml
+  # - title: "RSS"
+  #   url: feed.xml

@@ -5,7 +5,7 @@
   
   <link href="/feed.xml" rel="self" type="application/atom+xml" />
   <link href="/" rel="alternate" type="text/html" />
-  <updated>2019-10-06T04:09:00+00:00</updated>
+  <updated>2019-11-30T08:58:50+00:00</updated>
   <id>//</id>
 
   
@@ -31,12 +31,33 @@
       <title type="html">Hello, World!</title>
       
       
-      <link href="/2019/10/06/hello-world/" rel="alternate" type="text/html" title="Hello, World!" />
+      <link href="/2019/11/30/hello-world/" rel="alternate" type="text/html" title="Hello, World!" />
       
-      <published>2019-10-06T00:00:00+00:00</published>
-      <updated>2019-10-06T00:00:00+00:00</updated>
-      <id>/2019/10/06/hello-world</id>
-      <content type="html" xml:base="/2019/10/06/hello-world/">&lt;p&gt;to be written…&lt;/p&gt;</content>
+      <published>2019-11-30T00:00:00+00:00</published>
+      <updated>2019-11-30T00:00:00+00:00</updated>
+      <id>/2019/11/30/hello-world</id>
+      <content type="html" xml:base="/2019/11/30/hello-world/">&lt;p&gt;Hi，我是一名&lt;del&gt;就快没人要了的&lt;/del&gt; iOS 开发者。&lt;/p&gt;
+
+&lt;p&gt;不久前看的一篇旧文《&lt;a href=&quot;https://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx&quot;&gt;Dark Matter Developers: The Unseen 99%&lt;/a&gt;》里提出存在 99% 的”暗物质开发者”：他们不会读很多博客，从不写博客、参加群组或在社交媒体上发声，也不会经常出现在大型会议里、追求时髦的技术，只是专注地用早已成熟的技术把自己的工作做完，就像宇宙中的暗物质，不可见但确实存在的大多数。身边的不少同事、以前的同学大概属于这种类型，亦或者我自己很大程度上也在其中，那么也许建这个博客、写这篇文章也是我走向”可见”的第一步。&lt;/p&gt;
+
+&lt;p&gt;这个博客是在国庆假期建的，当时正在准备离职，之前准备面试的过程中能感觉到日常积累总结的对工作回顾、面试的重要，一是把一件事写下来或对别人讲出来能强迫自己更加系统、全面地思考；二是把当时的所见所思记录下来，也能避免过三五个月就忘掉做过什么；一个有内容的博客当然也能丰富简历。&lt;/p&gt;
+
+&lt;p&gt;在我看来如何表达、如何与人交流是作为程序员、乃至作为一个个人来说非常重要一项的软技能，可我实在算不上擅长组织语言，也不是有很多阅历、思考可以分享的人，很少当众发表言论和看法，连这篇自我介绍式的文章也写得磕磕绊绊的，日常接触得更多的还是计算机和编程，所以写些技术文章不失为一种一举多得的锻炼思维的方式。&lt;/p&gt;
+
+&lt;p&gt;设想中在这个博客里会有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;一些解决问题的思路和方案&lt;/li&gt;
+  &lt;li&gt;一些阅读笔记和源码分析&lt;/li&gt;
+  &lt;li&gt;可能会有对工作的思考&lt;/li&gt;
+  &lt;li&gt;可能会分享或翻译一些有启发的文章&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;（当然也可能过不久就从入门到放弃了）&lt;/p&gt;
+
+&lt;p&gt;目前这个博客还处于比较初始的状态，样式是在 &lt;a href=&quot;https://github.com/yous/whiteglass&quot;&gt;whiteglass&lt;/a&gt; 上改的，没有评论区或者阅读数之类的功能，不过个人还比较喜欢简单的样式，有时间再慢慢调整吧&lt;/p&gt;
+
+&lt;p&gt;就这样，有任何问题欢迎右上角联系我👋&lt;/p&gt;</content>
 
       
       
@@ -59,7 +80,7 @@
       
 
       
-        <summary type="html">to be written…</summary>
+        <summary type="html">Hi，我是一名就快没人要了的 iOS 开发者。 不久前看的一篇旧文《Dark Matter Developers: The Unseen 99%》里提出存在 99% 的”暗物质开发者”：他们不会读很多博客，从不写博客、参加群组或在社交媒体上发声，也不会经常出现在大型会议里、追求时髦的技术，只是专注地用早已成熟的技术把自己的工作做完，就像宇宙中的暗物质，不可见但确实存在的大多数。身边的不少同事、以前的同学大概属于这种类型，亦或者我自己很大程度上也在其中，那么也许建这个博客、写这篇文章也是我走向”可见”的第一步。 这个博客是在国庆假期建的，当时正在准备离职，之前准备面试的过程中能感觉到日常积累总结的对工作回顾、面试的重要，一是把一件事写下来或对别人讲出来能强迫自己更加系统、全面地思考；二是把当时的所见所思记录下来，也能避免过三五个月就忘掉做过什么；一个有内容的博客当然也能丰富简历。 在我看来如何表达、如何与人交流是作为程序员、乃至作为一个个人来说非常重要一项的软技能，可我实在算不上擅长组织语言，也不是有很多阅历、思考可以分享的人，很少当众发表言论和看法，连这篇自我介绍式的文章也写得磕磕绊绊的，日常接触得更多的还是计算机和编程，所以写些技术文章不失为一种一举多得的锻炼思维的方式。 设想中在这个博客里会有： 一些解决问题的思路和方案 一些阅读笔记和源码分析 可能会有对工作的思考 可能会分享或翻译一些有启发的文章 （当然也可能过不久就从入门到放弃了） 目前这个博客还处于比较初始的状态，样式是在 whiteglass 上改的，没有评论区或者阅读数之类的功能，不过个人还比较喜欢简单的样式，有时间再慢慢调整吧 就这样，有任何问题欢迎右上角联系我👋</summary>
       
 
       

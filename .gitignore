@@ -7,3 +7,5 @@ vendor
 *.gem
 .bundle
 Gemfile.lock
+
+.DS_STORE

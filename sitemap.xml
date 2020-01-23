@@ -5,6 +5,10 @@
 <lastmod>2019-11-30T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>/2020/01/23/vscode-debugging-xv6/</loc>
+<lastmod>2020-01-23T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>/about/</loc>
 </url>
 <url>
@@ -15,5 +19,8 @@
 </url>
 <url>
 <loc>/tags/about/</loc>
+</url>
+<url>
+<loc>/tags/tutorials/</loc>
 </url>
 </urlset>

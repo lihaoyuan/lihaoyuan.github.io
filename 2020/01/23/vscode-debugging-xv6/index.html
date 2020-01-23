@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>使用 VS Code 调试 Xv6</title>
+  <meta name="description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。 如何运行 Xv6 课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。 把代码 下载到 Mac 上； 安装 Xcode 命令行工具和 Homebrew（如果还没有的话）； 按照官网的指引安装运行 Xv6 依赖的 qemu、riscv-tools； 这时，cd 到代码目录，make qemu 应该就可以编译和运行了。">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/2020/01/23/vscode-debugging-xv6/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="lhy&#39;s blog" href="/feed.xml">
+
+  
+
+  
+  <meta property="og:title" content="使用 VS Code 调试 Xv6">
+  <meta property="og:site_name" content="lhy&#39;s blog">
+  <meta property="og:url" content="/2020/01/23/vscode-debugging-xv6/">
+  <meta property="og:description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。 如何运行 Xv6 课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。 把代码 下载到 Mac 上； 安装 Xcode 命令行工具和 Homebrew（如果还没有的话）； 按照官网的指引安装运行 Xv6 依赖的 qemu、riscv-tools； 这时，cd 到代码目录，make qemu 应该就可以编译和运行了。">
+  
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="使用 VS Code 调试 Xv6">
+  <meta name="twitter:description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code ...">
+  
+  
+
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css?family=Bitter:400,400i,700&display=swap" rel="stylesheet">
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">lhy&#39;s blog</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/archives/">归档</a>
+      
+        
+        <a class="page-link" href="mailto:li.haoyuan@foxmail.com">联系我</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">使用 VS Code 调试 Xv6</h1>
+    
+    <p class="post-meta"><time datetime="2020-01-23T00:00:00+00:00" itemprop="datePublished">2020/1/23</time>
+
+ •
+  
+    
+    
+      
+    
+      
+        <a href="/tags/tutorials/">tutorials</a>
+      
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><a href="https://pdos.csail.mit.edu/6.828/2019/xv6.html">Xv6</a> 是MIT 开发的一个教学使用的类 Unix 操作系统，<a href="https://github.com/mit-pdos/xv6-public">开源</a>并且配有“<a href="https://pdos.csail.mit.edu/6.828/2019/xv6/book-riscv-rev0.pdf">课本</a>”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。</p>
+
+<p>除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。</p>
+
+<h3 id="如何运行-xv6">如何运行 Xv6</h3>
+
+<p>课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。</p>
+
+<ol>
+  <li>把<a href="https://github.com/mit-pdos/xv6-public.git">代码</a> 下载到 Mac 上；</li>
+  <li>安装 Xcode 命令行工具和 Homebrew（如果还没有的话）；</li>
+  <li>按照<a href="https://pdos.csail.mit.edu/6.828/2019/tools.html">官网的指引</a>安装运行 Xv6 依赖的 qemu、riscv-tools；</li>
+  <li>这时，<code class="highlighter-rouge">cd</code> 到代码目录，<code class="highlighter-rouge">make qemu</code> 应该就可以编译和运行了。</li>
+</ol>
+
+<!--more-->
+
+<p><img src="/assets/xv6/run-xv6.png" alt="run xv6" /></p>
+
+<h3 id="如何调试-xv6">如何调试 Xv6</h3>
+
+<p>课本第二章章末练习中介绍到的 <code class="highlighter-rouge">make qemu-gdb</code> 就是用于调试的命令，提供启动时等待 debugger attach 的能力，在另一个命令行窗口中运行 <code class="highlighter-rouge">gdb</code> 时，gdb 就会 attach 到等待运行的 Xv6 上。</p>
+
+<p>新版本的 macOS 没有自带 gdb，所以需要先安装</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>gdb
+</code></pre></div></div>
+
+<p>但这时由于 riscv-gnu-toolchain 和 gdb link 了同一个文件 <code class="highlighter-rouge">jit-reader.h</code>，会导致 gdb 安装中断，可根据 brew 的提示运行</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">link</span> <span class="nt">--overwrite</span> gdb
+</code></pre></div></div>
+
+<p>这时再运行 <code class="highlighter-rouge">make qemu-gdb</code>，应该就会看到命令行进入等待 gdb attach 的状态，在其他窗口中运行 <code class="highlighter-rouge">gdb</code>，就可以按练习中的方式设置断点和其他调试了。</p>
+
+<h3 id="如何使用-vs-code-调试-xv6">如何使用 VS Code 调试 Xv6</h3>
+
+<p>如果用顺手的 IDE 取代命令行的 gdb 来做 attach ，调试会方便得多。</p>
+
+<p>为了方便编译，先添加 <code class="highlighter-rouge">.vscode/task.json</code>，添加后可以通过 command+shift+B 在 VS Code 的 terminal 中运行 <code class="highlighter-rouge">make qemu-gdb</code></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"tasks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"compile and run xv6 in debug mode"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"-c"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"make &amp;&amp; make qemu-gdb"</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="nl">"presentation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"echo"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"reveal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"always"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"focus"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"panel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"new"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"showReuseMessage"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"clear"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nl">"group"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"build"</span><span class="p">,</span><span class="w">
+                </span><span class="nl">"isDefault"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>再配置 <code class="highlighter-rouge">.vscode/launch.json</code> 文件如下，就可以在 VS Code 的 debug 面板中看到相应的运行选项。需要注意的是，这个配置只负责 attach，点击 run 之前需要先运行上面的 task 或手动在命令行跑 <code class="highlighter-rouge">make qemu-gdb</code>，并把 <code class="highlighter-rouge">miDebuggerServerAddress</code> 改成 terminal 中最后输出的端口号</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.2.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"configurations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Remote Debug Xv6"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cppdbg"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"launch"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"miDebuggerServerAddress"</span><span class="p">:</span><span class="w"> </span><span class="s2">":25502"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"program"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceRoot}/kernel/kernel"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"cwd"</span><span class="p">:</span><span class="s2">"."</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"MIMode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gdb"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"externalConsole"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"serverLaunchTimeout"</span><span class="p">:</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"stopAtEntry"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"logging"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"engineLogging"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>在 <code class="highlighter-rouge">kernel/main.c</code> 中打个断点，点 run 就会看到 Xv6 的运行被中断了。🎉</p>
+
+<p><img src="/assets/xv6/debug-xv6.png" alt="debug-xv6" /></p>
+
+<h3 id="one-more-thing">One more thing</h3>
+
+<p>再对其他函数做进一步的调试会发现，运行时代码里的很多符号被优化掉了，原因是 Makefile 没有对调试模式的编译选项做额外处理，由于是出于学习目的跑 Xv6，为了方便直接把两种运行模式的编译优化都关掉</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Makefile line 57</span>
+CFLAGS <span class="o">=</span> <span class="nt">-Wall</span> <span class="nt">-Werror</span> <span class="nt">-O</span> <span class="nt">-fno-omit-frame-pointer</span> <span class="nt">-ggdb</span>
+</code></pre></div></div>
+
+<p>这时候再编译会先后报几个问题，根据错误信息一一处理掉即可</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Makefile line 60</span>
+CFLAGS +<span class="o">=</span> <span class="nt">-ffreestanding</span> <span class="nt">-fno-common</span> <span class="nt">-mno-relax</span>
+</code></pre></div></div>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// user/usertests.c line 2123</span>
+<span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">test</span> <span class="p">{</span>
+</code></pre></div></div>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// user/usertests.c line 2186</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="n">tests</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">s</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">((</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="n">strcmp</span><span class="p">((</span><span class="n">tests</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">run</span><span class="p">((</span><span class="n">tests</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">tests</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">))</span>
+      <span class="n">fail</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>可参考<a href="https://github.com/lihaoyuan/xv6-riscv/commit/b2930ce6bed375f252bb73ce7069ecbf96100345">这个提交</a>。</p>
+
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; lhy - Powered by <a href="https://jekyllrb.com">Jekyll</a> - Subscribe via <a href="/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+  <script>
+    $(document).ready(function() {
+        $("p img").each(function() {
+            var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+            $(this).wrapAll(strA);
+        });
+    });
+</script>
+
+</footer>
+
+
+  </body>
+
+</html>

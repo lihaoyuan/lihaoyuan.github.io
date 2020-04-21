@@ -5,7 +5,7 @@
   
   <link href="/feed.xml" rel="self" type="application/atom+xml" />
   <link href="/" rel="alternate" type="text/html" />
-  <updated>2020-03-16T13:49:39+00:00</updated>
+  <updated>2020-04-21T13:19:41+00:00</updated>
   <id>//</id>
 
   
@@ -24,6 +24,84 @@
     </author>
   
 
+  
+  
+    <entry>
+      
+      <title type="html">Xv6 笔记（一）：隔离</title>
+      
+      
+      <link href="/2020/04/21/xv6-note-1/" rel="alternate" type="text/html" title="Xv6 笔记（一）：隔离" />
+      
+      <published>2020-04-21T00:00:00+00:00</published>
+      <updated>2020-04-21T00:00:00+00:00</updated>
+      <id>/2020/04/21/xv6-note-1</id>
+      <content type="html" xml:base="/2020/04/21/xv6-note-1/">&lt;p&gt;当一个应用程序执行出错时，我们不希望操作系统或其他不相关的程序因此也出错，相反，操作系统应该要能发现并清理掉出错的程序，并继续运行其他程序。要实现有效的隔离首先要求操作系统和应用程序之间有明确的界限，普通程序不能写（甚至读）系统的数据结构和指令，也不能访问其他进程的内存&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;CPU 为隔离提供了硬件上的支持。例如 RISC-V 指令集提供了下列三种指令执行模式：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;机器模式（machine mode）：有完整的执行权限，主要用于启动时初始化计算机配置&lt;/li&gt;
+  &lt;li&gt;管理员模式（supervisor mode）：可以执行特权指令（privileged instruction），例如开关中断、读写一些特定的寄存器等。如果运行在用户模式下的执行特权指令，CPU 不会执行，而是会切到管理员模式并在管理员模式下杀掉试图越界的程序。运行在管理员模式（或者说内核空间）的软件称为内核&lt;/li&gt;
+  &lt;li&gt;用户模式（user mode）：程序代码只能执行用户模式指令，CPU 提供了 &lt;code class=&quot;highlighter-rouge&quot;&gt;ecall&lt;/code&gt; 指令来让用户模式下的程序切换到管理员模式并进入内核指定的入口&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;xv6 整个操作系统运行都在管理员模式下（&lt;a href=&quot;http://en.wikipedia.org/wiki/Monolithic_kernel&quot;&gt;宏内核&lt;/a&gt;），而普通程序只能运行在用户模式，这样，&lt;strong&gt;通过 CPU 指令执行模式的限制就可以确保系统和程序间的隔离&lt;/strong&gt;，程序只能通过内核提供的系统调用接口使用内核提供的服务，例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;fork&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;wirte&lt;/code&gt; 等，内核可以先检查确保参数和程序权限合法，再真正调用服务&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/assets/xv6-note-1/image-20200418232330934.png&quot; alt=&quot;system call&quot; style=&quot;zoom: 50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;计算机当前的执行状态称为映像（image），包括核心映像（程序代码、堆栈等）、通用寄存器的值、已打开文件的状态和当前目录等，而进程是映像的执行实体。和其它 Unix 操作系统一样，进程也是 xv6 的基本隔离单位&lt;/p&gt;
+
+&lt;p&gt;为帮助实现程序间隔离，进程机制为每个程序制造了它有一整台私有计算机的假象，程序”拥有“一个私有的内存系统（或者叫地址空间）和一个单独的 CPU 来执行它的指令。前者通过硬件提供的&lt;strong&gt;页表&lt;/strong&gt;实现，RISC-V 使用页表把虚拟地址（RISC-V 指令操作的地址）映射到物理内存的地址上，xv6 为每个进程维护独立的页表，构成进程的地址空间&lt;/p&gt;
+
+&lt;p&gt;xv6 所运行的 Sv39 模式使用 39 位的虚拟地址（64 位地址的前 25 位未使用），地址被分为三个 9 位的 VPN（virtual page number）和一个 12 位的页偏移量&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/assets/xv6-note-1/image-20200419144315632.png&quot; alt=&quot;Sv39 virtual address&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;存储在物理内存中的页表是一棵三层的树，树的根节点是一个 4096 字节的页表页（大小与物理内存中的页对齐），包含 2&lt;sup&gt;9&lt;/sup&gt; 个 8 字节的 PTE（page table entry），每个 PTE 包含指向下一层页表页的物理地址（和低 10 位描述 PTE 信息的标记位），第二层的每个页表页又包含 2&lt;sup&gt;9&lt;/sup&gt; 个指向第三层页表页的 PTE。页表硬件使用虚拟地址的高九位 VPN[2] 作为索引从根节点得到一个指向第二层页表页的地址，然后用 VPN[1] 从第二层获取第三层页表页的地址，最后通过 VPN[0] 选中最后的 PTE，从中获取 44 位的物理地址，拼上虚拟地址最后 12 位的偏移量，得到一个 56 位的物理地址，就是这个虚拟地址所映射的物理地址&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/assets/xv6-note-1/image-20200419150955605.png&quot; alt=&quot;page table&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;每个 CPU 都有各自的 satp 寄存器（supervisor address translation and protection register），当把页表树根节点的物理地址写到 satp 后，CPU 后续执行的所有指令中的地址都会用这个页表来转换&lt;/p&gt;
+
+&lt;p&gt;当用户进程的内存分配器（例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;malloc&lt;/code&gt;）通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;sbrk&lt;/code&gt; 申请内存时，内核会按上述转化逻辑依次访问（或生成，如果没有的话）各层对应的 PTE，把新申请到的物理内存的地址保存到第三层的 PTE 里，然后向用户进程返回该虚拟地址；当用户进程访问某个虚拟地址时，如果地址转化过程中遇到的任意一个 PTE 不存在或一些标记与访问类型不符—-即程序访问了一个非法地址，分页硬件就会抛出页错误异常（page-fault）&lt;/p&gt;
+
+&lt;p&gt;这种三层结构允许页表懒加载页表页，很大范围内的虚拟地址的页表页没被访问就不会生成出来&lt;/p&gt;
+
+&lt;p&gt;内核有单独的页表，不同进程也有各自的页表，把虚拟地址转换成了不同的物理内存页地址。通过页表，每个进程都拥有完整连续的虚拟地址（0～MAXVA），而实际的物理地址可以是不连续的；同时页表还可以把同一片物理内存映射到不同地址空间，在不同进程间复用同一份代码，例如每个进程用户地址空间都有的 trampoline 页&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>lhy</name>
+          
+          
+        </author>
+      
+
+      
+
+      
+        <category term="os" />
+      
+        <category term="xv6" />
+      
+
+      
+        <summary type="html">当一个应用程序执行出错时，我们不希望操作系统或其他不相关的程序因此也出错，相反，操作系统应该要能发现并清理掉出错的程序，并继续运行其他程序。要实现有效的隔离首先要求操作系统和应用程序之间有明确的界限，普通程序不能写（甚至读）系统的数据结构和指令，也不能访问其他进程的内存</summary>
+      
+
+      
+      
+    </entry>
+  
   
   
     <entry>
@@ -116,6 +194,8 @@
 
 &lt;p&gt;除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。&lt;/p&gt;
 
+&lt;!--more--&gt;
+
 &lt;h3 id=&quot;如何运行-xv6&quot;&gt;如何运行 Xv6&lt;/h3&gt;
 
 &lt;p&gt;课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。&lt;/p&gt;
@@ -126,8 +206,6 @@
   &lt;li&gt;按照&lt;a href=&quot;https://pdos.csail.mit.edu/6.828/2019/tools.html&quot;&gt;官网的指引&lt;/a&gt;安装运行 Xv6 依赖的 qemu、riscv-tools；&lt;/li&gt;
   &lt;li&gt;这时，&lt;code class=&quot;highlighter-rouge&quot;&gt;cd&lt;/code&gt; 到代码目录，&lt;code class=&quot;highlighter-rouge&quot;&gt;make qemu&lt;/code&gt; 应该就可以编译和运行了。&lt;/li&gt;
 &lt;/ol&gt;
-
-&lt;!--more--&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/xv6/run-xv6.png&quot; alt=&quot;run xv6&quot; /&gt;&lt;/p&gt;
 
@@ -250,76 +328,13 @@ CFLAGS +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&q
       
 
       
-        <category term="tutorials" />
+        <category term="os" />
+      
+        <category term="xv6" />
       
 
       
-        <summary type="html">Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。 如何运行 Xv6 课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。 把代码 下载到 Mac 上； 安装 Xcode 命令行工具和 Homebrew（如果还没有的话）； 按照官网的指引安装运行 Xv6 依赖的 qemu、riscv-tools； 这时，cd 到代码目录，make qemu 应该就可以编译和运行了。</summary>
-      
-
-      
-      
-    </entry>
-  
-  
-  
-    <entry>
-      
-      <title type="html">Hello, World!</title>
-      
-      
-      <link href="/2019/11/30/hello-world/" rel="alternate" type="text/html" title="Hello, World!" />
-      
-      <published>2019-11-30T00:00:00+00:00</published>
-      <updated>2019-11-30T00:00:00+00:00</updated>
-      <id>/2019/11/30/hello-world</id>
-      <content type="html" xml:base="/2019/11/30/hello-world/">&lt;p&gt;Hi，我是一名&lt;del&gt;就快没人要了的&lt;/del&gt; iOS 开发者。&lt;/p&gt;
-
-&lt;p&gt;不久前看的一篇旧文《&lt;a href=&quot;https://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx&quot;&gt;Dark Matter Developers: The Unseen 99%&lt;/a&gt;》里提出存在 99% 的”暗物质开发者”：他们不会读很多博客，从不写博客、参加群组或在社交媒体上发声，也不会经常出现在大型会议里、追求时髦的技术，只是专注地用早已成熟的技术把自己的工作做完，就像宇宙中的暗物质，不可见但确实存在的大多数。身边的不少同事、以前的同学大概属于这种类型，亦或者我自己很大程度上也在其中，那么也许建这个博客、写这篇文章也是我走向”可见”的第一步。&lt;/p&gt;
-
-&lt;p&gt;这个博客是在国庆假期建的，当时正在准备离职，之前准备面试的过程中能感觉到日常积累总结的对工作回顾、面试的重要，一是把一件事写下来或对别人讲出来能强迫自己更加系统、全面地思考；二是把当时的所见所思记录下来，也能避免过三五个月就忘掉做过什么；一个有内容的博客当然也能丰富简历。&lt;/p&gt;
-
-&lt;!--more--&gt;
-
-&lt;p&gt;在我看来如何表达、如何与人交流是作为程序员、乃至作为一个个人来说非常重要一项的软技能，可我实在算不上擅长组织语言，也不是有很多阅历、思考可以分享的人，很少当众发表言论和看法，连这篇自我介绍式的文章也写得磕磕绊绊的，日常接触得更多的还是计算机和编程，所以写些技术文章不失为一种一举多得的锻炼思维的方式。&lt;/p&gt;
-
-&lt;p&gt;设想中在这个博客里会有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;一些解决问题的思路和方案&lt;/li&gt;
-  &lt;li&gt;一些阅读笔记和源码分析&lt;/li&gt;
-  &lt;li&gt;可能会有对工作的思考&lt;/li&gt;
-  &lt;li&gt;可能会分享或翻译一些有启发的文章&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;（当然也可能过不久就从入门到放弃了）&lt;/p&gt;
-
-&lt;p&gt;目前这个博客还处于比较初始的状态，样式是在 &lt;a href=&quot;https://github.com/yous/whiteglass&quot;&gt;whiteglass&lt;/a&gt; 上改的，没有评论区或者阅读数之类的功能，不过个人还比较喜欢简单的样式，有时间再慢慢调整吧&lt;/p&gt;
-
-&lt;p&gt;就这样，有任何问题欢迎右上角联系我👋&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      
-        <author>
-            <name>lhy</name>
-          
-          
-        </author>
-      
-
-      
-
-      
-        <category term="about" />
-      
-
-      
-        <summary type="html">Hi，我是一名就快没人要了的 iOS 开发者。 不久前看的一篇旧文《Dark Matter Developers: The Unseen 99%》里提出存在 99% 的”暗物质开发者”：他们不会读很多博客，从不写博客、参加群组或在社交媒体上发声，也不会经常出现在大型会议里、追求时髦的技术，只是专注地用早已成熟的技术把自己的工作做完，就像宇宙中的暗物质，不可见但确实存在的大多数。身边的不少同事、以前的同学大概属于这种类型，亦或者我自己很大程度上也在其中，那么也许建这个博客、写这篇文章也是我走向”可见”的第一步。 这个博客是在国庆假期建的，当时正在准备离职，之前准备面试的过程中能感觉到日常积累总结的对工作回顾、面试的重要，一是把一件事写下来或对别人讲出来能强迫自己更加系统、全面地思考；二是把当时的所见所思记录下来，也能避免过三五个月就忘掉做过什么；一个有内容的博客当然也能丰富简历。</summary>
+        <summary type="html">Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。</summary>
       
 
       

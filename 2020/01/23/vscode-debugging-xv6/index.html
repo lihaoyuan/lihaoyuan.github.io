@@ -10,7 +10,7 @@
   
   
   <title>使用 VS Code 调试 Xv6</title>
-  <meta name="description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。 如何运行 Xv6 课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。 把代码 下载到 Mac 上； 安装 Xcode 命令行工具和 Homebrew（如果还没有的话）； 按照官网的指引安装运行 Xv6 依赖的 qemu、riscv-tools； 这时，cd 到代码目录，make qemu 应该就可以编译和运行了。">
+  <meta name="description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。">
   
 
   <link rel="stylesheet" href="/assets/main.css">
@@ -25,7 +25,7 @@
   <meta property="og:title" content="使用 VS Code 调试 Xv6">
   <meta property="og:site_name" content="lhy&#39;s blog">
   <meta property="og:url" content="/2020/01/23/vscode-debugging-xv6/">
-  <meta property="og:description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。 如何运行 Xv6 课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。 把代码 下载到 Mac 上； 安装 Xcode 命令行工具和 Homebrew（如果还没有的话）； 按照官网的指引安装运行 Xv6 依赖的 qemu、riscv-tools； 这时，cd 到代码目录，make qemu 应该就可以编译和运行了。">
+  <meta property="og:description" content="Xv6 是MIT 开发的一个教学使用的类 Unix 操作系统，开源并且配有“课本”。相比大而全的教科书，它更加精简，只包含部分核心的操作系统思想和概念；又更加具体，完全可以从源码层面去看如何简单地实现进程、页表、锁这些基础设施，很适合在离开学校之后拿来补课。 除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。">
   
   
   <meta name="twitter:card" content="summary">
@@ -85,9 +85,20 @@
     
     
       
+        <a href="/tags/os/">os</a>,
+      
     
       
-        <a href="/tags/tutorials/">tutorials</a>
+    
+      
+    
+  
+    
+    
+      
+    
+      
+        <a href="/tags/xv6/">xv6</a>
       
     
       
@@ -102,6 +113,8 @@
 
 <p>除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。</p>
 
+<!--more-->
+
 <h3 id="如何运行-xv6">如何运行 Xv6</h3>
 
 <p>课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。</p>
@@ -112,8 +125,6 @@
   <li>按照<a href="https://pdos.csail.mit.edu/6.828/2019/tools.html">官网的指引</a>安装运行 Xv6 依赖的 qemu、riscv-tools；</li>
   <li>这时，<code class="highlighter-rouge">cd</code> 到代码目录，<code class="highlighter-rouge">make qemu</code> 应该就可以编译和运行了。</li>
 </ol>
-
-<!--more-->
 
 <p><img src="/assets/xv6/run-xv6.png" alt="run xv6" /></p>
 

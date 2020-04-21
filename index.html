@@ -87,6 +87,65 @@
         <header class="post-header">
           <h1 class="post-title">
             
+              <a class="post-link" href="/2020/04/21/xv6-note-1/">Xv6 笔记（一）：隔离</a>
+            
+          </h1>
+
+          <p class="post-meta">
+            2020/4/21
+            
+              
+
+ •
+  
+    
+    
+      
+        <a href="/tags/os/">os</a>,
+      
+    
+      
+    
+      
+    
+  
+    
+    
+      
+    
+      
+        <a href="/tags/xv6/">xv6</a>
+      
+    
+      
+    
+  
+
+
+            
+            
+          </p>
+        </header>
+
+        <div class="post-content">
+          <p>当一个应用程序执行出错时，我们不希望操作系统或其他不相关的程序因此也出错，相反，操作系统应该要能发现并清理掉出错的程序，并继续运行其他程序。要实现有效的隔离首先要求操作系统和应用程序之间有明确的界限，普通程序不能写（甚至读）系统的数据结构和指令，也不能访问其他进程的内存</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2020/04/21/xv6-note-1/">阅读全文 &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            
               <a class="post-link" href="/2020/03/16/a-5g-future/">5G 未来（译文）</a>
             
           </h1>
@@ -157,9 +216,20 @@
     
     
       
+        <a href="/tags/os/">os</a>,
+      
     
       
-        <a href="/tags/tutorials/">tutorials</a>
+    
+      
+    
+  
+    
+    
+      
+    
+      
+        <a href="/tags/xv6/">xv6</a>
       
     
       
@@ -177,74 +247,11 @@
 
 <p>除了课本和注释，阅读和理解一份源码最有效的方式就是把它跑起来、调试起来，下面会说明怎么用在 macOS 下运行和使用 VS Code 调试 Xv6 内核。</p>
 
-<h3 id="如何运行-xv6">如何运行 Xv6</h3>
-
-<p>课程官网或一些博客都能找到关于运行 Xv6 的介绍，这里就只简单写一下步骤。</p>
-
-<ol>
-  <li>把<a href="https://github.com/mit-pdos/xv6-public.git">代码</a> 下载到 Mac 上；</li>
-  <li>安装 Xcode 命令行工具和 Homebrew（如果还没有的话）；</li>
-  <li>按照<a href="https://pdos.csail.mit.edu/6.828/2019/tools.html">官网的指引</a>安装运行 Xv6 依赖的 qemu、riscv-tools；</li>
-  <li>这时，<code class="highlighter-rouge">cd</code> 到代码目录，<code class="highlighter-rouge">make qemu</code> 应该就可以编译和运行了。</li>
-</ol>
-
 
         </div>
         
           <p class="post-continue">
             <a href="/2020/01/23/vscode-debugging-xv6/">阅读全文 &rarr;</a>
-          </p>
-        
-      </li>
-    
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            
-              <a class="post-link" href="/2019/11/30/hello-world/">Hello, World!</a>
-            
-          </h1>
-
-          <p class="post-meta">
-            2019/11/30
-            
-              
-
- •
-  
-    
-    
-      
-        <a href="/tags/about/">about</a>
-      
-    
-      
-    
-      
-    
-  
-
-
-            
-            
-          </p>
-        </header>
-
-        <div class="post-content">
-          <p>Hi，我是一名<del>就快没人要了的</del> iOS 开发者。</p>
-
-<p>不久前看的一篇旧文《<a href="https://www.hanselman.com/blog/DarkMatterDevelopersTheUnseen99.aspx">Dark Matter Developers: The Unseen 99%</a>》里提出存在 99% 的”暗物质开发者”：他们不会读很多博客，从不写博客、参加群组或在社交媒体上发声，也不会经常出现在大型会议里、追求时髦的技术，只是专注地用早已成熟的技术把自己的工作做完，就像宇宙中的暗物质，不可见但确实存在的大多数。身边的不少同事、以前的同学大概属于这种类型，亦或者我自己很大程度上也在其中，那么也许建这个博客、写这篇文章也是我走向”可见”的第一步。</p>
-
-<p>这个博客是在国庆假期建的，当时正在准备离职，之前准备面试的过程中能感觉到日常积累总结的对工作回顾、面试的重要，一是把一件事写下来或对别人讲出来能强迫自己更加系统、全面地思考；二是把当时的所见所思记录下来，也能避免过三五个月就忘掉做过什么；一个有内容的博客当然也能丰富简历。</p>
-
-
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2019/11/30/hello-world/">阅读全文 &rarr;</a>
           </p>
         
       </li>

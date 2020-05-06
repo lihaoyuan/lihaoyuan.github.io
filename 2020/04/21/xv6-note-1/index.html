@@ -121,15 +121,13 @@
   <li>用户模式（user mode）：程序代码只能执行用户模式指令，CPU 提供了 <code class="highlighter-rouge">ecall</code> 指令来让用户模式下的程序切换到管理员模式并进入内核指定的入口</li>
 </ol>
 
-<p>xv6 整个操作系统运行都在管理员模式下（<a href="http://en.wikipedia.org/wiki/Monolithic_kernel">宏内核</a>），而普通程序只能运行在用户模式，这样，<strong>通过 CPU 指令执行模式的限制就可以确保系统和程序间的隔离</strong>，程序只能通过内核提供的系统调用接口使用内核提供的服务，例如 <code class="highlighter-rouge">fork</code>、<code class="highlighter-rouge">read</code>、<code class="highlighter-rouge">wirte</code> 等，内核可以先检查确保参数和程序权限合法，再真正调用服务</p>
+<p>Xv6 整个操作系统运行都在管理员模式下（<a href="http://en.wikipedia.org/wiki/Monolithic_kernel">宏内核</a>），而普通程序只能运行在用户模式，这样，<strong>通过 CPU 指令执行模式的限制就可以确保系统和程序间的隔离</strong>，程序只能通过内核提供的系统调用接口使用内核提供的服务，例如 <code class="highlighter-rouge">fork</code>、<code class="highlighter-rouge">read</code>、<code class="highlighter-rouge">wirte</code> 等，内核可以先检查确保参数和程序权限合法，再真正调用服务</p>
 
 <p style="text-align:center;"><img src="/assets/xv6-note-1/image-20200418232330934.png" alt="system call" style="zoom: 50%;" /></p>
 
-<p>计算机当前的执行状态称为映像（image），包括核心映像（程序代码、堆栈等）、通用寄存器的值、已打开文件的状态和当前目录等，而进程是映像的执行实体。和其它 Unix 操作系统一样，进程也是 xv6 的基本隔离单位</p>
+<p>和其它 Unix 操作系统一样，进程也是 xv6 的基本隔离单位。为帮助实现程序间隔离，进程机制为每个程序制造了它有一整台私有计算机的假象，程序”拥有“一个私有的内存系统（或者叫地址空间）和一个单独的 CPU 来执行它的指令。前者通过硬件提供的<strong>页表</strong>实现，RISC-V 使用页表把虚拟地址（RISC-V 指令操作的地址）映射到物理内存的地址上，xv6 为每个进程维护独立的页表，构成进程的地址空间</p>
 
-<p>为帮助实现程序间隔离，进程机制为每个程序制造了它有一整台私有计算机的假象，程序”拥有“一个私有的内存系统（或者叫地址空间）和一个单独的 CPU 来执行它的指令。前者通过硬件提供的<strong>页表</strong>实现，RISC-V 使用页表把虚拟地址（RISC-V 指令操作的地址）映射到物理内存的地址上，xv6 为每个进程维护独立的页表，构成进程的地址空间</p>
-
-<p>xv6 所运行的 Sv39 模式使用 39 位的虚拟地址（64 位地址的前 25 位未使用），地址被分为三个 9 位的 VPN（virtual page number）和一个 12 位的页偏移量</p>
+<p>Xv6 所运行的 Sv39 模式使用 39 位的虚拟地址（64 位地址的前 25 位未使用），地址被分为三个 9 位的 VPN（virtual page number）和一个 12 位的页偏移量</p>
 
 <p style="text-align:center;"><img src="/assets/xv6-note-1/image-20200419144315632.png" alt="Sv39 virtual address" style="zoom:50%;" /></p>
 
@@ -143,7 +141,7 @@
 
 <p>这种三层结构允许页表懒加载页表页，很大范围内的虚拟地址的页表页没被访问就不会生成出来</p>
 
-<p>内核有单独的页表，不同进程也有各自的页表，把虚拟地址转换成了不同的物理内存页地址。通过页表，每个进程都拥有完整连续的虚拟地址（0～MAXVA），而实际的物理地址可以是不连续的；同时页表还可以把同一片物理内存映射到不同地址空间，在不同进程间复用同一份代码，例如每个进程用户地址空间都有的 trampoline 页</p>
+<p>通过页表，每个进程都拥有完整连续的虚拟地址（0～MAXVA），而实际的物理地址可以是不连续的；同时页表还可以把同一片物理内存映射到不同地址空间，在不同进程间复用同一份代码（例如每个进程用户地址空间都有的 trampoline 页）。内核有单独的页表，不同进程也有各自的页表，把虚拟地址转换成不同的物理内存页地址，从而实现程序间内存的隔离</p>
 
   </div>
 

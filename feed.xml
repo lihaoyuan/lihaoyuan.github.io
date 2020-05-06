@@ -5,7 +5,7 @@
   
   <link href="/feed.xml" rel="self" type="application/atom+xml" />
   <link href="/" rel="alternate" type="text/html" />
-  <updated>2020-04-21T13:19:41+00:00</updated>
+  <updated>2020-05-06T12:54:51+00:00</updated>
   <id>//</id>
 
   
@@ -48,15 +48,13 @@
   &lt;li&gt;用户模式（user mode）：程序代码只能执行用户模式指令，CPU 提供了 &lt;code class=&quot;highlighter-rouge&quot;&gt;ecall&lt;/code&gt; 指令来让用户模式下的程序切换到管理员模式并进入内核指定的入口&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;xv6 整个操作系统运行都在管理员模式下（&lt;a href=&quot;http://en.wikipedia.org/wiki/Monolithic_kernel&quot;&gt;宏内核&lt;/a&gt;），而普通程序只能运行在用户模式，这样，&lt;strong&gt;通过 CPU 指令执行模式的限制就可以确保系统和程序间的隔离&lt;/strong&gt;，程序只能通过内核提供的系统调用接口使用内核提供的服务，例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;fork&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;wirte&lt;/code&gt; 等，内核可以先检查确保参数和程序权限合法，再真正调用服务&lt;/p&gt;
+&lt;p&gt;Xv6 整个操作系统运行都在管理员模式下（&lt;a href=&quot;http://en.wikipedia.org/wiki/Monolithic_kernel&quot;&gt;宏内核&lt;/a&gt;），而普通程序只能运行在用户模式，这样，&lt;strong&gt;通过 CPU 指令执行模式的限制就可以确保系统和程序间的隔离&lt;/strong&gt;，程序只能通过内核提供的系统调用接口使用内核提供的服务，例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;fork&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;wirte&lt;/code&gt; 等，内核可以先检查确保参数和程序权限合法，再真正调用服务&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/assets/xv6-note-1/image-20200418232330934.png&quot; alt=&quot;system call&quot; style=&quot;zoom: 50%;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;计算机当前的执行状态称为映像（image），包括核心映像（程序代码、堆栈等）、通用寄存器的值、已打开文件的状态和当前目录等，而进程是映像的执行实体。和其它 Unix 操作系统一样，进程也是 xv6 的基本隔离单位&lt;/p&gt;
+&lt;p&gt;和其它 Unix 操作系统一样，进程也是 xv6 的基本隔离单位。为帮助实现程序间隔离，进程机制为每个程序制造了它有一整台私有计算机的假象，程序”拥有“一个私有的内存系统（或者叫地址空间）和一个单独的 CPU 来执行它的指令。前者通过硬件提供的&lt;strong&gt;页表&lt;/strong&gt;实现，RISC-V 使用页表把虚拟地址（RISC-V 指令操作的地址）映射到物理内存的地址上，xv6 为每个进程维护独立的页表，构成进程的地址空间&lt;/p&gt;
 
-&lt;p&gt;为帮助实现程序间隔离，进程机制为每个程序制造了它有一整台私有计算机的假象，程序”拥有“一个私有的内存系统（或者叫地址空间）和一个单独的 CPU 来执行它的指令。前者通过硬件提供的&lt;strong&gt;页表&lt;/strong&gt;实现，RISC-V 使用页表把虚拟地址（RISC-V 指令操作的地址）映射到物理内存的地址上，xv6 为每个进程维护独立的页表，构成进程的地址空间&lt;/p&gt;
-
-&lt;p&gt;xv6 所运行的 Sv39 模式使用 39 位的虚拟地址（64 位地址的前 25 位未使用），地址被分为三个 9 位的 VPN（virtual page number）和一个 12 位的页偏移量&lt;/p&gt;
+&lt;p&gt;Xv6 所运行的 Sv39 模式使用 39 位的虚拟地址（64 位地址的前 25 位未使用），地址被分为三个 9 位的 VPN（virtual page number）和一个 12 位的页偏移量&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/assets/xv6-note-1/image-20200419144315632.png&quot; alt=&quot;Sv39 virtual address&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
 
@@ -70,7 +68,7 @@
 
 &lt;p&gt;这种三层结构允许页表懒加载页表页，很大范围内的虚拟地址的页表页没被访问就不会生成出来&lt;/p&gt;
 
-&lt;p&gt;内核有单独的页表，不同进程也有各自的页表，把虚拟地址转换成了不同的物理内存页地址。通过页表，每个进程都拥有完整连续的虚拟地址（0～MAXVA），而实际的物理地址可以是不连续的；同时页表还可以把同一片物理内存映射到不同地址空间，在不同进程间复用同一份代码，例如每个进程用户地址空间都有的 trampoline 页&lt;/p&gt;</content>
+&lt;p&gt;通过页表，每个进程都拥有完整连续的虚拟地址（0～MAXVA），而实际的物理地址可以是不连续的；同时页表还可以把同一片物理内存映射到不同地址空间，在不同进程间复用同一份代码（例如每个进程用户地址空间都有的 trampoline 页）。内核有单独的页表，不同进程也有各自的页表，把虚拟地址转换成不同的物理内存页地址，从而实现程序间内存的隔离&lt;/p&gt;</content>
 
       
       

@@ -87,6 +87,69 @@
         <header class="post-header">
           <h1 class="post-title">
             
+              <a class="post-link" href="/2020/08/04/xv6-note-3/">Xv6 笔记（三）：锁</a>
+            
+          </h1>
+
+          <p class="post-meta">
+            2020/8/4
+            
+              
+
+ •
+  
+    
+    
+      
+        <a href="/tags/os/">os</a>,
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+    
+      
+    
+      
+        <a href="/tags/xv6/">xv6</a>
+      
+    
+      
+    
+      
+    
+  
+
+
+            
+            
+          </p>
+        </header>
+
+        <div class="post-content">
+          <p>由于调度随时发生，而物理内存被多个 CPU 共享，所以两个 CPU 或线程有可能会同时访问同一个数据结构，如果不小心地限制并发访问，同时读写或同时写都可能会得到错误的结果、甚至损坏数据结构。有许多策略可以用来保持并发下代码的正确性，锁是其中常用的一种</p>
+
+
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2020/08/04/xv6-note-3/">阅读全文 &rarr;</a>
+          </p>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            
               <a class="post-link" href="/2020/07/06/efficiency/">关于提高效率</a>
             
           </h1>
@@ -302,64 +365,6 @@
         
           <p class="post-continue">
             <a href="/2020/04/21/xv6-note-1/">阅读全文 &rarr;</a>
-          </p>
-        
-      </li>
-    
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            
-              <a class="post-link" href="/2020/03/16/a-5g-future/">5G 未来（译文）</a>
-            
-          </h1>
-
-          <p class="post-meta">
-            2020/3/16
-            
-              
-
- •
-  
-    
-    
-      
-    
-      
-    
-      
-        <a href="/tags/translations/">translations</a>
-      
-    
-      
-    
-  
-
-
-            
-            
-          </p>
-        </header>
-
-        <div class="post-content">
-          <blockquote>
-  <p>这是一篇英文文章的中文翻译</p>
-
-  <p><strong>This is a Chinese translation of the English language article:<br /></strong>
-<strong>Loukides, Mike. “A 5G future”<br /></strong>
-<strong><a href="https://www.oreilly.com/radar/a-5g-future/">https://www.oreilly.com/radar/a-5g-future/</a></strong></p>
-</blockquote>
-
-<p>在过去的一年里，5G 通信技术引起了很多人的兴奋，也引发了不少炒作。5G 的技术指标令人瞩目：它将为手机、智能汽车和很多还没发明出来的移动设备提供高达 20 Gbps 的<a href="https://www.etsi.org/technologies/5g">峰值数据传输速率</a>（“<a href="https://5gobservatory.eu/info-deployments/5g-performance/">用户体验的数据传输速率</a>”为 100 Mbps）。很难想象什么样的 app 会需要如此多的数据，而 5G 支持者们似乎觉得一切皆有可能。5G 在实践中意味着什么？我们需要好好想想它能为现实世界带来什么样的变化。</p>
-
-
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2020/03/16/a-5g-future/">阅读全文 &rarr;</a>
           </p>
         
       </li>
